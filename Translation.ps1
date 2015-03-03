@@ -1,5 +1,3 @@
-cls
-
 function New-TranslationTable {
     <#
         .Synopsis
@@ -24,13 +22,13 @@ function New-TranslationTable {
     #>
     param(
         # This is the string having actual characters.
-        $InputTable,
+        [string]$InputTable,
         # This is the string having corresponding mapping character.
-        $OutputTable
+        [string]$OutputTable
     )
 
     $count = $InputTable.Length
-    $h = New-Object "System.Collections.Generic.Dictionary``2[System.String,System.String]"
+    $h = @{}
     for($idx=0; $idx -lt $count; $idx+=1) {
         $h[$InputTable[$idx]]=$OutputTable[$idx]
     }
@@ -96,3 +94,30 @@ function Invoke-Translate {
 
     $result
 }
+
+$InputTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+$OutputTable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/"
+
+$Direction = 0
+
+# If you are going to encode the information using the default alphabet set $Direction to 0.
+If($Direction -eq 0)
+ {
+$TranslationTable = New-TranslationTable $InputTable $InputTable
+ }
+ 
+# If you are going to encode the information using the custom alphabet set $Direction to 1.
+If($Direction -eq 1)
+ {
+$TranslationTable = New-TranslationTable $InputTable $OutputTable
+ }
+
+# If you are going to decode the information using the custom alphabet set $Direction to 2.
+If($Direction -eq 2)
+ {
+$TranslationTable = New-TranslationTable $OutputTable $InputTable
+ }
+
+$string = "this is string example....wow!!!";
+$string = Invoke-Translate $string $TranslationTable
+$string
